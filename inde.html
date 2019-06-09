@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>飞机大战</title>
+  <style>
+    canvas{
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+<canvas width="300" height="500"></canvas>
+<script>
+var canvas = document.querySelector('canvas');
+</script>
+<script src="./js/background.js"></script>
+<script src="./js/hero.js"></script>
+<script src="./js/pool.js"></script>
+<script>
+var ctx = canvas.getContext('2d');
+const background = _background(ctx);
+const hero = _hero(ctx);
+const pool = _pool(ctx,hero);
+const bgmusic = new Audio();
+bgmusic.src = './audio/bgm.mp3';
+// 背景音乐
+hero.listen(); // 监听飞机移动
+
+let myTop = 0;
+console.log(myTop);
+// 游戏开始函数
+function move() {
+  ctx.clearRect(0,0, canvas.width, canvas.height);
+  myTop += 5;
+  if (myTop > canvas.height) {
+    myTop = 0;
+  }
+  // 背景
+  bgmusic.loop = true;
+  bgmusic.play();
+  // console.log(myTop);
+  background.draw(myTop);
+  // 英雄
+  hero.draw();
+  // 敌机
+  pool.drawEnemys(myTop);
+  // 子弹
+  pool.drawBullets(myTop, hero);
+  // 爆炸
+  pool.drawBooms(ctx, {x:100, y:100});
+  // 积分
+  pool.drawScores();
+  // 游戏结束
+  if (hero.over) {
+    pool.drwaLayer();
+    return ;
+  }
+  requestAnimationFrame(move);
+}
+move();
+</script>
+</body>
+</html>
